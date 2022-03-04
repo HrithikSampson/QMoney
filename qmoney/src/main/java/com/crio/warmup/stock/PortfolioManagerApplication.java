@@ -1,7 +1,6 @@
 
 package com.crio.warmup.stock;
 
-
 import com.crio.warmup.stock.dto.*;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.ThreadContext;
 import org.springframework.web.client.RestTemplate;
-
+import com.crio.warmup.stock.dto.PortfolioTrade;
+import java.io.File;
 
 public class PortfolioManagerApplication {
 
@@ -45,8 +46,16 @@ public class PortfolioManagerApplication {
   //  2. You can use "./gradlew build" to check if your code builds successfully.
 
   public static List<String> mainReadFile(String[] args) throws IOException, URISyntaxException {
+    ObjectMapper om = new ObjectMapper();
+    ClassLoader loader = PortfolioManagerApplication.class.getClassLoader();
+    PortfolioTrade[] pt = om.readValue(loader.getResource(args[0]), PortfolioTrade[].class);
+    List<String> l = new ArrayList<>();
+    for(int idx = 0;idx < pt.length; idx++){
+      l.add(pt[idx].getSymbol());
+    }
+    System.out.println(l);
+    return l;
 
-     return Collections.emptyList();
   }
 
 
@@ -96,7 +105,7 @@ public class PortfolioManagerApplication {
   //  Once you are able to run the test, perform following tasks and record the output as a
   //  String in the function below.
   //  Use this link to see how to evaluate expressions -
-  //  https://code.visualstudio.com/docs/editor/debugging#_data-inspection
+  //  https://code.visualstudio.com/docs/etrades.jsonditor/debugging#_data-inspection
   //  1. evaluate the value of "args[0]" and set the value
   //     to the variable named valueOfArgument0 (This is implemented for your reference.)
   //  2. In the same window, evaluate the value of expression below and set it
@@ -117,10 +126,10 @@ public class PortfolioManagerApplication {
   public static List<String> debugOutputs() {
 
      String valueOfArgument0 = "trades.json";
-     String resultOfResolveFilePathArgs0 = "";
-     String toStringOfObjectMapper = "";
-     String functionNameFromTestFileInStackTrace = "";
-     String lineNumberFromTestFileInStackTrace = "";
+     String resultOfResolveFilePathArgs0 = "/home/crio-user/workspace/hrithikedwardsampson-ME_QMONEY_V2/qmoney/bin/main/trades.json";
+     String toStringOfObjectMapper = "com.fasterxml.jackson.databind.ObjectMapper@2f9f7dcf";
+     String functionNameFromTestFileInStackTrace = "mainReadFile";
+     String lineNumberFromTestFileInStackTrace = "1";
 
 
     return Arrays.asList(new String[]{valueOfArgument0, resultOfResolveFilePathArgs0,

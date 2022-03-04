@@ -3,6 +3,12 @@ package com.crio.warmup.stock.dto;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
+@JsonIgnoreProperties("Buy Price")
 public class PortfolioTrade {
 
   public PortfolioTrade() {  }
@@ -15,6 +21,7 @@ public class PortfolioTrade {
   private String symbol;
   private int quantity;
   private TradeType tradeType;
+  @JsonDeserialize(using= LocalDateDeserializer.class)
   private LocalDate purchaseDate;
 
   public PortfolioTrade(String symbol, int quantity, LocalDate purchaseDate) {
