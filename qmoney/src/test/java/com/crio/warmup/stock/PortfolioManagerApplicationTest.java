@@ -27,6 +27,7 @@ class PortfolioManagerApplicationTest {
     //when
     List<String> results = PortfolioManagerApplication
         .mainReadFile(new String[]{filename});
+    System.out.println(results+","+expected);
 
     //then
     Assertions.assertEquals(expected, results);

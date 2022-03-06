@@ -23,7 +23,7 @@ class ModuleTwoTest {
     List<PortfolioTrade> trades = PortfolioManagerApplication
         .readTradesFromJson(filename);
     List<String> actual = trades.stream().map(PortfolioTrade::getSymbol).collect(Collectors.toList());
-
+    
     //then
     Assertions.assertEquals(expected, actual);
   }

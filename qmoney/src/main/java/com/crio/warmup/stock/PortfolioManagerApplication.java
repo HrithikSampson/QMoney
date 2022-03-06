@@ -3,6 +3,7 @@ package com.crio.warmup.stock;
 
 import com.crio.warmup.stock.dto.*;
 import com.crio.warmup.stock.log.UncaughtExceptionHandler;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.File;
@@ -110,35 +111,6 @@ public class PortfolioManagerApplication {
     return objectMapper;
   }
 
-
-  // TODO: CRIO_TASK_MODULE_JSON_PARSING
-  //  Follow the instructions provided in the task documentation and fill up the correct values for
-  //  the variables provided. First value is provided for your reference.
-  //  A. Put a breakpoint on the first line inside mainReadFile() which says
-  //    return Collections.emptyList();
-  //  B. Then Debug the test #mainReadFile provided in PortfoliomanagerApplicationTest.java
-  //  following the instructions to run the test.
-  //  Once you are able to run the test, perform following tasks and record the output as a
-  //  String in the function below.
-  //  Use this link to see how to evaluate expressions -
-  //  https://code.visualstudio.com/docs/etrades.jsonditor/debugging#_data-inspection
-  //  1. evaluate the value of "args[0]" and set the value
-  //     to the variable named valueOfArgument0 (This is implemented for your reference.)
-  //  2. In the same window, evaluate the value of expression below and set it
-  //  to resultOfResolveFilePathArgs0
-  //     expression ==> resolveFileFromResources(args[0])
-  //  3. In the same window, evaluate the value of expression below and set it
-  //  to toStringOfObjectMapper.
-  //  You might see some garbage numbers in the output. Dont worry, its expected.
-  //    expression ==> getObjectMapper().toString()
-  //  4. Now Go to the debug window and open stack trace. Put the name of the function you see at
-  //  second place from top to variable functionNameFromTestFileInStackTrace
-  //  5. In the same window, you will see the line number of the function in the stack trace window.
-  //  assign the same to lineNumberFromTestFileInStackTrace
-  //  Once you are done with above, just run the corresponding test and
-  //  make sure its working as expected. use below command to do the same.
-  //  ./gradlew test --tests PortfolioManagerApplicationTest.testDebugValues
-
   public static List<String> debugOutputs() {
 
      String valueOfArgument0 = "trades.json";
@@ -156,7 +128,7 @@ public class PortfolioManagerApplication {
 
   // Note:
   // Remember to confirm that you are getting same results for annualized returns as in Module 3.
-  public static List<String> mainReadQuotes(String[] args) throws IOException, URISyntaxException, RestClientException {
+  public static List<String> mainReadQuotes(String[] args) throws IOException, URISyntaxException, RestClientException, RuntimeException {
       RestTemplate restTemplate = new RestTemplate();
       ObjectMapper om = new ObjectMapper();
     ClassLoader loader = PortfolioManagerApplication.class.getClassLoader();
@@ -191,14 +163,19 @@ public class PortfolioManagerApplication {
   //  ./gradlew test --tests PortfolioManagerApplicationTest.readTradesFromJson
   //  ./gradlew test --tests PortfolioManagerApplicationTest.mainReadFile
   public static List<PortfolioTrade> readTradesFromJson(String filename) throws IOException, URISyntaxException {
-     return Collections.emptyList();
+    ObjectMapper om = new ObjectMapper();
+    ClassLoader loader = PortfolioManagerApplication.class.getClassLoader();
+    List<PortfolioTrade> pt = om.readValue(loader.getResource(filename), new TypeReference<List<PortfolioTrade>>(){
+    });
+
+     return pt;
   }
 
 
   // TODO:
   //  Build the Url using given parameters and use this function in your code to cann the API.
   public static String prepareUrl(PortfolioTrade trade, LocalDate endDate, String token) {
-     return "";
+     return "https://api.tiingo.com/tiingo/daily/"+trade.getSymbol()+"/prices?"+"startDate="+trade.getPurchaseDate().toString()+"&endDate="+endDate+"&token="+token;
   }
 
 
