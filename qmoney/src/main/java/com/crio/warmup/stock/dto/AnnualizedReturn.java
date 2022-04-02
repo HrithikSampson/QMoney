@@ -24,4 +24,8 @@ public class AnnualizedReturn {
   public Double getTotalReturns() {
     return totalReturns;
   }
+
+  public String toString(){
+    return String.valueOf(annualizedReturn);
+  }
 }
