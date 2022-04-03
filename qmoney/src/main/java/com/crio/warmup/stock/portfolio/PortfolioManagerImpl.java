@@ -34,6 +34,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 
+
 class CandleComparator implements Comparator<Candle> {
   public int compare(Candle c1, Candle c2) {
     return (c1.getDate()).isAfter(c2.getDate()) ? 1 : -1;
@@ -67,23 +68,21 @@ public class PortfolioManagerImpl implements PortfolioManager {
   // ./gradlew test --tests PortfolioManagerTest
 
   //CHECKSTYLE:OFF
-  public static List<Candle> fetchCandles(PortfolioTrade trade, LocalDate endDate, String token) {
-    RestTemplate restTemplate = new RestTemplate();
-    List<String> l = new ArrayList<>();
+  // public static List<Candle> fetchCandles(PortfolioTrade trade, LocalDate endDate, String token) {
+  //   RestTemplate restTemplate = new RestTemplate();
+  //   List<String> l = new ArrayList<>();
 
-      l.add(trade.getSymbol());
-      ResponseEntity<List<TiingoCandle>> tiingoCandles = restTemplate.exchange(
-          "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol() + "/prices?endDate=" + endDate + "&startDate="
-              + trade.getPurchaseDate().toString() + "&token="+token,
-              HttpMethod.GET,
-              null,
-              new ParameterizedTypeReference<List<TiingoCandle>>(){});
-      List<Candle> c = new ArrayList<>();      
-        for(TiingoCandle t:tiingoCandles.getBody()){
-          c.add(t);
-      }
-      return c;
-  }
+  //     l.add(trade.getSymbol());
+  //     TiingoCandle[] response = restTemplate.getForObject(
+  //         buildUri(trade.getSymbol(), trade.getPurchaseDate(), endDate),
+  //             TiingoCandle[].class);
+  //     List<TiingoCandle> tiingoCandles = Arrays.asList(response);
+  //     List<Candle> c = new ArrayList<>();      
+  //     for(TiingoCandle t:tiingoCandles){
+  //         c.add(t);
+  //     }
+  //     return c;
+  // }
 
   static Double getOpeningPriceOnStartDate(List<Candle> candles) {
     Collections.sort(candles, new CandleComparator());
@@ -118,23 +117,23 @@ public class PortfolioManagerImpl implements PortfolioManager {
   public List<Candle> getStockQuote(String symbol, LocalDate from, LocalDate to)
       throws JsonProcessingException {
         String uri = buildUri(symbol, from, to);
+        System.out.println("URI:"+uri);
     List<String> l = new ArrayList<>();
 
       l.add(symbol);
-      ResponseEntity<List<TiingoCandle>> tiingoCandles = this.restTemplate.exchange(
+      TiingoCandle[] response = this.restTemplate.getForObject(
               uri,
-              HttpMethod.GET,
-              null,
-              new ParameterizedTypeReference<List<TiingoCandle>>(){});
+              TiingoCandle[].class);
+      List<TiingoCandle> tiingoCandles = Arrays.asList(response);
       List<Candle> c = new ArrayList<>();      
-        for(TiingoCandle t:tiingoCandles.getBody()){
+        for(TiingoCandle t:tiingoCandles){
           c.add(t);
       }
       return c;
   }
 
   protected String buildUri(String symbol, LocalDate startDate, LocalDate endDate) {
-       String uriTemplate = "https:api.tiingo.com/tiingo/daily/"+symbol+"/prices?"
+       String uriTemplate = "https://api.tiingo.com/tiingo/daily/"+symbol+"/prices?"
             + "startDate="+startDate+"&endDate="+endDate+"&token="+PortfolioManagerImpl.getToken();
         return uriTemplate;
   }

@@ -18,7 +18,7 @@ class PortfolioManagerApplicationTest {
   //  These files are replaced from stock contents while executing the assessments.
   //  Any modifications in this file may result in Assessment failure!
 
-
+     
   @Test
   void mainReadFile() throws Exception {
     //given

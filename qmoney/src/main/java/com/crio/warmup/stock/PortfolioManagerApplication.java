@@ -45,6 +45,7 @@ class CloseComparator implements Comparator<Candle> {
   }
 }
 
+
 class CandleComparator implements Comparator<Candle> {
   public int compare(Candle c1, Candle c2) {
     return (c1.getDate()).isAfter(c2.getDate()) ? 1 : -1;
@@ -216,14 +217,13 @@ public class PortfolioManagerApplication {
     HashMap<String, Double> mapList = new HashMap<>();
 
       l.add(trade.getSymbol());
-      ResponseEntity<List<TiingoCandle>> tiingoCandles = restTemplate.exchange(
+      TiingoCandle[] response = restTemplate.getForObject(
           "https://api.tiingo.com/tiingo/daily/" + trade.getSymbol() + "/prices?endDate=" + endDate + "&startDate="
               + trade.getPurchaseDate().toString() + "&token="+token,
-              HttpMethod.GET,
-              null,
-              new ParameterizedTypeReference<List<TiingoCandle>>(){});
+              TiingoCandle[].class);
+      List<TiingoCandle> tiingoCandles = Arrays.asList(response);
       List<Candle> c = new ArrayList<>();      
-        for(TiingoCandle t:tiingoCandles.getBody()){
+        for(TiingoCandle t:tiingoCandles){
           c.add(t);
       }
       return c;
